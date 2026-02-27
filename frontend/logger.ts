@@ -16,12 +16,7 @@ class Logger {
   }
 
   #log(log: typeof console.log, ...args: unknown[]) {
-    log(
-      `%c ${this.#badgeText} %c`,
-      this.#badgeStyle,
-      this.#resetStyle,
-      ...args,
-    );
+    log(`%c ${this.#badgeText} %c`, this.#badgeStyle, this.#resetStyle, ...args);
   }
 
   debug(...args: unknown[]) {

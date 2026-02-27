@@ -1,13 +1,9 @@
-import {
-  LastPlayed,
-  PlayBarClasses,
-  Playtime,
-} from '../components/play-bar.js';
-import { NON_STEAM_APP_APPID_MASK } from '../constants.js';
-import { querySelectorAll, renderComponent } from '../helpers.js';
-import logger from '../logger.js';
-import rpc from '../rpc.js';
-import type Steam from '../steam.js';
+import { LastPlayed, PlayBarClasses, Playtime } from '../components/play-bar';
+import { NON_STEAM_APP_APPID_MASK } from '../constants';
+import { querySelectorAll, renderComponent } from '../helpers';
+import logger from '../logger';
+import rpc from '../rpc';
+import type Steam from '../steam';
 
 export async function patch(window: Window, app: Steam.AppOverview) {
   if (app.appid < NON_STEAM_APP_APPID_MASK) return;
@@ -21,10 +17,7 @@ export async function patch(window: Window, app: Steam.AppOverview) {
   const [{ minutesForever, lastPlayedAt }] = //
     await rpc.GetPlaytimes([app.display_name] as const);
 
-  const parents = await querySelectorAll(
-    window.document,
-    `.${PlayBarClasses.GameStatsSection}`,
-  );
+  const parents = await querySelectorAll(window.document, `.${PlayBarClasses.GameStatsSection}`);
 
   for (const parent of parents) {
     if (lastPlayedAt) {

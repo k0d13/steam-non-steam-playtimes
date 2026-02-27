@@ -1,5 +1,5 @@
 import { findClassModule, findModuleExport } from '@steambrew/client';
-import Steam from '../steam.js';
+import Steam from '../steam';
 
 const formatRelativeDate = //
   findModuleExport((e) => e?.toString?.()?.includes('"#Time_Today"'));
@@ -16,13 +16,9 @@ export function LastPlayed({ lastPlayedAt }: { lastPlayedAt: Date }) {
         <div className={PlayBar.PlayBarLabel}>
           {/* TODO: Currently this assumes every non-steam app is a game, allow to differentiate */}
           {/* IDEA: Check if the app exists on Steam - grab the app type and use here */}
-          {Steam.LocalizationManager.LocalizeString(
-            '#AppDetails_SectionTitle_LastPlayed',
-          )}
+          {Steam.LocalizationManager.LocalizeString('#AppDetails_SectionTitle_LastPlayed')}
         </div>
-        <div
-          className={`${PlayBar.PlayBarDetailLabel} ${PlayBar.LastPlayedInfo}`}
-        >
+        <div className={`${PlayBar.PlayBarDetailLabel} ${PlayBar.LastPlayedInfo}`}>
           {formatRelativeDate(lastPlayedAt.getTime() / 1000)}
         </div>
       </div>
@@ -39,13 +35,9 @@ export function Playtime({ minutesForever }: { minutesForever: number }) {
       <div className={PlayBar.GameStatRight}>
         <div className={PlayBar.PlayBarLabel}>
           {/* TODO: RE: L18 */}
-          {Steam.LocalizationManager.LocalizeString(
-            '#AppDetails_SectionTitle_PlayTime',
-          )}
+          {Steam.LocalizationManager.LocalizeString('#AppDetails_SectionTitle_PlayTime')}
         </div>
-        <div className={PlayBar.PlayBarDetailLabel}>
-          {formatDuration(minutesForever)}
-        </div>
+        <div className={PlayBar.PlayBarDetailLabel}>{formatDuration(minutesForever)}</div>
       </div>
     </div>
   );

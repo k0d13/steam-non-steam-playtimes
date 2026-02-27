@@ -1,19 +1,11 @@
 import { Millennium } from '@steambrew/client';
-import { jsonReplacer, jsonReviver, type Tuple } from './helpers.js';
+import type { Tuple } from './helpers.js';
 import type Steam from './steam.js';
 
-/**
- * Call a method on the server
- * @param route The route to call, must be prefixed with `RPC.`
- * @param payload The payload to send
- * @returns The response from the server
- */
-function call<R>(route: `RPC.${string}`, payload: object): Promise<R> {
-  // Millennium build step for callable uses find and replace which doesn't always work
-  // (Sometimes the client variable will be called client$1 if you have another variable called client)
-  return Millennium.callServerMethod(route, {
-    payload: JSON.stringify(payload, jsonReplacer),
-  }).then((r) => JSON.parse(r, jsonReviver));
+async function call<R>(route: `RPC.${string}`, payload: object): Promise<R> {
+  return Millennium.callServerMethod(route.slice(4), {
+    payload: JSON.stringify(payload),
+  }).then((r) => JSON.parse(r));
 }
 
 export class RPC {
@@ -39,13 +31,12 @@ export class RPC {
   }
 
   async GetPlaytimes<T extends readonly string[]>(appNames: T) {
-    if (appNames.length === 0)
-      return [] as Tuple<(typeof formatted)[number], T['length']>;
+    if (appNames.length === 0) return [] as Tuple<(typeof formatted)[number], T['length']>;
     const timings = await call<
       {
         minutes_forever: number;
         minutes_last_two_weeks: number;
-        last_played_at: Date;
+        last_played_at: number | null;
       }[]
     >('RPC.GetPlaytimes', {
       app_names: appNames,
@@ -53,7 +44,7 @@ export class RPC {
     const formatted = timings.map((t) => ({
       minutesForever: Math.round(t.minutes_forever),
       minutesLastTwoWeeks: Math.round(t.minutes_last_two_weeks),
-      lastPlayedAt: t.last_played_at,
+      lastPlayedAt: t.last_played_at ? new Date(t.last_played_at * 1000) : null,
     }));
     return formatted as Tuple<(typeof formatted)[number], T['length']>;
   }

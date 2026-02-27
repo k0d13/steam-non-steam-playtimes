@@ -1,5 +1,5 @@
-import { MONITOR_LOCATION_POLL_INTERVAL } from '../constants.js';
-import type { Awaitable, Voidable } from '../helpers.js';
+import { MONITOR_LOCATION_POLL_INTERVAL } from '../constants';
+import type { Awaitable, Voidable } from '../helpers';
 
 type Location = { pathname: string; search: string; hash: string };
 

@@ -1,10 +1,10 @@
 import { Button, findClassModule, TextField } from '@steambrew/client';
 import { createMs, Time } from 'enhanced-ms';
 import { useCallback, useMemo, useState } from 'react';
-import { forceFakeLocationChange } from '../helpers.js';
-import logger from '../logger.js';
-import rpc from '../rpc.js';
-import type Steam from '../steam.js';
+import { forceFakeLocationChange } from '../helpers';
+import logger from '../logger';
+import rpc from '../rpc';
+import type Steam from '../steam';
 
 const ms = createMs({
   formatOptions: {
@@ -20,10 +20,7 @@ export function PlaytimeInput({ app }: { app: Steam.AppOverview }) {
     useState(app.minutes_playtime_forever * Time.Minute);
   const [initialPlaytime] = useState(() => ms(playtimeMs) ?? '');
   const isValid = useMemo(
-    () =>
-      Number.isFinite(playtimeMs) &&
-      playtimeMs >= 0 &&
-      playtimeMs <= Time.Year * 25,
+    () => Number.isFinite(playtimeMs) && playtimeMs >= 0 && playtimeMs <= Time.Year * 25,
     [playtimeMs],
   );
 
@@ -52,8 +49,8 @@ export function PlaytimeInput({ app }: { app: Steam.AppOverview }) {
     <div>
       <div className={SettingsStyles.Title}>Playtime</div>
       <div>
-        Manually set the total playtime for this app. Reducing it below the
-        current total will reset date-based playtime statistics.
+        Manually set the total playtime for this app. Reducing it below the current total will reset
+        date-based playtime statistics.
       </div>
       <div className={SettingsStyles.AsyncBackedInputChildren}>
         <TextField

@@ -18,9 +18,6 @@
     }
   },
 
-  // TypeScript
-  "typescript.preferences.importModuleSpecifierEnding": "js",
-
   // Code Spell Checker
   "cSpell.language": "en-AU",
   "cSpell.words": ["playtimes", "rpcmethod", "renderers"],

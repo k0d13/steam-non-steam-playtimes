@@ -1,9 +1,9 @@
 import { beforePatch } from '@steambrew/client';
-import { PlaytimeInput } from '../components/playtime-input.js';
-import { NON_STEAM_APP_APPID_MASK } from '../constants.js';
-import { waitFor } from '../helpers.js';
-import logger from '../logger.js';
-import Steam from '../steam.js';
+import { PlaytimeInput } from '../components/playtime-input';
+import { NON_STEAM_APP_APPID_MASK } from '../constants';
+import { waitFor } from '../helpers';
+import logger from '../logger';
+import Steam from '../steam';
 
 interface AppPropertiesPage {
   title: string;
@@ -32,34 +32,30 @@ export async function register() {
   // we reduce the number of calls to this patch to ~700.
   await waitFor(() => Steam.MainWindowBrowserManager);
 
-  const patch = beforePatch(
-    Array.prototype,
-    'map',
-    function (this: AppPropertiesPage[]) {
-      if (
-        this.length === 0 ||
-        this.length > 20 ||
-        !this.every(isAppPropertiesPage) ||
-        this.some((p) => p.route === '/app/:appid/properties/playtime')
-      )
-        return;
+  const patch = beforePatch(Array.prototype, 'map', function (this: AppPropertiesPage[]) {
+    if (
+      this.length === 0 ||
+      this.length > 20 ||
+      !this.every(isAppPropertiesPage) ||
+      this.some((p) => p.route === '/app/:appid/properties/playtime')
+    )
+      return;
 
-      const appId = Number(this[0]!.link.split('/')[2]);
-      if (Number.isNaN(appId) || appId < NON_STEAM_APP_APPID_MASK) return;
-      const app = Steam.AppStore.allApps.find((a) => a.appid === appId)!;
+    const appId = Number(this[0]!.link.split('/')[2]);
+    if (Number.isNaN(appId) || appId < NON_STEAM_APP_APPID_MASK) return;
+    const app = Steam.AppStore.allApps.find((a) => a.appid === appId)!;
 
-      this.push({
-        title: 'Playtime',
-        route: '/app/:appid/properties/playtime',
-        link: `/app/${app.appid}/properties/playtime`,
-        content: (
-          <div className="DialogBody">
-            <PlaytimeInput app={app} />
-          </div>
-        ),
-      });
-    },
-  );
+    this.push({
+      title: 'Playtime',
+      route: '/app/:appid/properties/playtime',
+      link: `/app/${app.appid}/properties/playtime`,
+      content: (
+        <div className="DialogBody">
+          <PlaytimeInput app={app} />
+        </div>
+      ),
+    });
+  });
 
   logger.debug('Registered app properties patch', { patch });
 
