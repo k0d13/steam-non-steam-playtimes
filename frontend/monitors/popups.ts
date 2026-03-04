@@ -1,5 +1,5 @@
-import type { Awaitable, Voidable } from '../helpers.js';
-import Steam from '../steam.js';
+import type { Awaitable, Voidable } from '../helpers';
+import Steam from '../steam';
 
 const kOnCloseSet = Symbol.for('non-steam-playtimes.on-close-set');
 
@@ -30,10 +30,8 @@ export function onPopupCreate(
     let type: PopupType = PopupType.Unknown;
     if (popup.window?.name.startsWith('SP Desktop_')) type = PopupType.Desktop;
     else if (popup.window?.name.startsWith('SP BPM_')) type = PopupType.Gamepad;
-    else if (popup.window?.name.startsWith('PopupWindow_'))
-      type = PopupType.Modal;
-    else if (popup.window?.name.startsWith('contextmenu_'))
-      type = PopupType.ContextMenu;
+    else if (popup.window?.name.startsWith('PopupWindow_')) type = PopupType.Modal;
+    else if (popup.window?.name.startsWith('contextmenu_')) type = PopupType.ContextMenu;
 
     const onCloseSet = new Set<VoidFunction>();
     Reflect.set(popup, kOnCloseSet, onCloseSet);

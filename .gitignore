@@ -1,6 +1,3 @@
-.ignore/
-node_modules/
-python_modules/
 .millennium/
+node_modules/
 sessions.json
-sessions.json.*.bak

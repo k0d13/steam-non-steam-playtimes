@@ -1,20 +1,16 @@
 import { beforePatch } from '@steambrew/client';
-import { NON_STEAM_APP_APPID_MASK } from '../constants.js';
-import logger from '../logger.js';
-import rpc from '../rpc.js';
-import Steam from '../steam.js';
+import { NON_STEAM_APP_APPID_MASK } from '../constants';
+import logger from '../logger';
+import rpc from '../rpc';
+import Steam from '../steam';
 
 export function register() {
   const patch = beforePatch(
     Steam.CollectionStore,
     'OnAppOverviewChange',
-    // @ts-expect-error - beforePatch doesn't have good typings
-    async function (
-      this: Steam.CollectionStore,
-      [apps]: [Steam.AppOverview[]],
-    ) {
+    async function (this: Steam.CollectionStore, [apps]: [Steam.AppOverview[]]) {
       const nonSteamApps = apps //
-        .filter((a) => a.appid > NON_STEAM_APP_APPID_MASK);
+        .filter((a) => a.appid >= NON_STEAM_APP_APPID_MASK);
       const appNames = nonSteamApps.map((a) => a.display_name);
       const playTimings = await rpc.GetPlaytimes(appNames);
 
@@ -24,8 +20,7 @@ export function register() {
 
         app.minutes_playtime_forever = playtime.minutesForever;
         app.minutes_playtime_last_two_weeks = playtime.minutesLastTwoWeeks;
-        app.rt_last_time_played =
-          (playtime.lastPlayedAt?.getTime() ?? 0) / 1000;
+        app.rt_last_time_played = (playtime.lastPlayedAt?.getTime() ?? 0) / 1000;
       }
     },
   );

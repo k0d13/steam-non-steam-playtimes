@@ -1,6 +1,6 @@
-import { MONITOR_RUNNING_APPS_POLL_INTERVAL } from '../constants.js';
-import type { Awaitable, Voidable } from '../helpers.js';
-import Steam from '../steam.js';
+import { MONITOR_RUNNING_APPS_POLL_INTERVAL } from '../constants';
+import type { Awaitable, Voidable } from '../helpers';
+import Steam from '../steam';
 
 /**
  * Monitor running applications and trigger when they launch, quit or heartbeat
@@ -38,8 +38,7 @@ export function onAppLaunch(
 
         const onQuit = await handleLaunch(app, {
           onLaunch: (cb: VoidFunction) => onLaunchSet.add(cb),
-          onHeartbeat: (cb: VoidFunction) =>
-            onHeartbeatMap.get(app.appid)!.add(cb),
+          onHeartbeat: (cb: VoidFunction) => onHeartbeatMap.get(app.appid)!.add(cb),
           onQuit: (cb: VoidFunction) => onQuitMap.get(app.appid)!.add(cb),
         });
         if (onQuit) onQuitMap.get(app.appid)!.add(onQuit);
@@ -63,9 +62,6 @@ export function onAppLaunch(
   }
 
   checkRunningApps();
-  const monitor = setInterval(
-    checkRunningApps,
-    MONITOR_RUNNING_APPS_POLL_INTERVAL,
-  );
+  const monitor = setInterval(checkRunningApps, MONITOR_RUNNING_APPS_POLL_INTERVAL);
   return () => clearInterval(monitor);
 }

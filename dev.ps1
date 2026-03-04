@@ -25,12 +25,12 @@ function Set-PluginName {
   $json.common_name = $CommonName
   $json | ConvertTo-Json -Depth 100 | Set-Content $Path
 
-  pnpm biome format plugin.json --write
+  bun oxfmt plugin.json
 }
 
 function Build-Plugin {
   Write-Host "Building plugin..."
-  pnpm millennium-ttc --build dev
+  bun millennium-ttc --build dev
 }
 
 function Copy-PluginFiles {
@@ -48,37 +48,30 @@ function Toggle-Plugin {
 
   Write-Host "$(if ($Enable) { "Enabling" } else { "Disabling" }) plugin $Name..."
 
-  $lines = Get-Content $Path
+  $json = Get-Content -Path $Path -Raw | ConvertFrom-Json
+  $plugins = @($json.plugins.enabledPlugins)
 
-  for ($i = 0; $i -lt $lines.Length; $i++) {
-    if ($lines[$i] -match '^\s*enabled_plugins\s*=') {
-      $plugins = ($lines[$i] -split '=')[1].Trim() -split '\|'
-
-      if ($Enable) {
-        if (-not ($plugins -contains $Name)) { $plugins += $Name }
-        $plugins = $plugins | Sort-Object
-      } else {
-        $plugins = $plugins | Where-Object { $_ -ne $Name }
-      }
-
-      $lines[$i] = "enabled_plugins = " + ($plugins -join '|')
-      break
-    }
+  if ($Enable) {
+    if (-not ($plugins -contains $Name)) { $plugins = @($plugins + $Name) }
+    $plugins = @($plugins | Sort-Object -Unique)
+  } else {
+    $plugins = @($plugins | Where-Object { $_ -ne $Name })
   }
 
-  Set-Content $Path $lines
+  $json.plugins.enabledPlugins = $plugins
+  $json | ConvertTo-Json -Depth 100 | Set-Content $Path
 }
 
 #####
 
 $SteamPath = "C:\Program Files (x86)\Steam"
-$IniPath = "$SteamPath\ext\millennium.ini"
+$ConfigPath = "$SteamPath\ext\config.json"
 $PluginName, $PluginCommonName = Get-PluginName -Path "./plugin.json"
 Stop-SteamProcess
 Set-PluginName -Path "plugin.json" -Name $PluginName-dev -CommonName "$PluginCommonName (dev)"
 Build-Plugin
 Copy-PluginFiles -Destination "$SteamPath\plugins\$PluginName-dev"
 Set-PluginName -Path "plugin.json" -Name $PluginName -CommonName $PluginCommonName
-Toggle-Plugin -Path $IniPath -Name $PluginName -Enable $false
-Toggle-Plugin -Path $IniPath -Name $PluginName-dev -Enable $true
+Toggle-Plugin -Path $ConfigPath -Name $PluginName -Enable $false
+Toggle-Plugin -Path $ConfigPath -Name $PluginName-dev -Enable $true
 Start-SteamProcess $SteamPath

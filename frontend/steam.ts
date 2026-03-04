@@ -1,8 +1,6 @@
 import type {} from '@steambrew/client';
 
-type SB_AppOverview = NonNullable<
-  ReturnType<(typeof window)['appStore']['GetAppOverviewByAppID']>
->;
+type SB_AppOverview = NonNullable<ReturnType<(typeof window)['appStore']['GetAppOverviewByAppID']>>;
 
 namespace Steam {
   // ===== CallbackList ===== //
@@ -31,10 +29,7 @@ namespace Steam {
     ): ReturnType<this['m_rgPopupDestroyedCallbacks']['Register']>;
   }
 
-  export const PopupManager: PopupManager = Reflect.get(
-    globalThis,
-    'g_PopupManager',
-  );
+  export const PopupManager: PopupManager = Reflect.get(globalThis, 'g_PopupManager');
 
   export const DesktopWindowName = 'SP Desktop_uid0';
   export const GamepadWindowName = 'SP BPM_uid0';
@@ -66,16 +61,12 @@ namespace Steam {
     m_history: MainWindowBrowserHistory;
   }
 
-  export interface MainWindowBrowserLocation
-    extends Pick<URL, 'pathname' | 'search' | 'hash'> {
+  export interface MainWindowBrowserLocation extends Pick<URL, 'pathname' | 'search' | 'hash'> {
     key: string;
   }
 
   export interface MainWindowBrowser {
-    on(
-      name: 'finished-request',
-      listener: (url: string, title: string) => void,
-    ): void;
+    on(name: 'finished-request', listener: (url: string, title: string) => void): void;
   }
 
   export interface MainWindowBrowserHistory {

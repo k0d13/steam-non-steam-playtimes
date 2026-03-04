@@ -59,8 +59,7 @@ export default async function OnPluginLoaded() {
 
     const cleanup = onLocationChange(
       () => {
-        if (type === PopupType.Desktop)
-          return Steam.MainWindowBrowserManager?.m_lastLocation;
+        if (type === PopupType.Desktop) return Steam.MainWindowBrowserManager?.m_lastLocation;
         if (type === PopupType.Gamepad) return popup.window?.opener?.location;
       },
       ({ pathname }) => {

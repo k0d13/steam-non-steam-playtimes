@@ -1,0 +1,7 @@
+{
+  "singleQuote": true,
+  "experimentalSortImports": {
+    "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "unknown"],
+    "newlinesBetween": false
+  }
+}
