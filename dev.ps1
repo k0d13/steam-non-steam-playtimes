@@ -49,11 +49,11 @@ function Toggle-Plugin {
   Write-Host "$(if ($Enable) { "Enabling" } else { "Disabling" }) plugin $Name..."
 
   $json = Get-Content $Path | ConvertFrom-Json
-  $plugins = $json.plugins.enabledPlugins
+  $plugins = @($json.plugins.enabledPlugins)
 
   if ($Enable) {
-    if (-not ($plugins -contains $Name)) { $plugins += $Name }
-    $plugins = $plugins | Sort-Object
+    if (-not ($plugins -contains $Name)) { $plugins = @($plugins + $Name) }
+    $plugins = @($plugins | Sort-Object -Unique)
   } else {
     $plugins = @($plugins | Where-Object { $_ -ne $Name })
   }
