@@ -182,7 +182,7 @@ local function set_playtime(app_name, minutes_forever)
 
   local sessions = SESSIONS[app_name] or {}
   local current_minutes = 0
-  for _, session in sessions do
+  for _, session in ipairs(sessions) do
     local minutes = (session.ended_at - session.started_at) / 60
     current_minutes = current_minutes + minutes
   end
@@ -190,7 +190,7 @@ local function set_playtime(app_name, minutes_forever)
   if minutes_forever >= current_minutes then
     local extra_minutes = minutes_forever - current_minutes
     local zero_session = nil
-    for _, session in sessions do
+    for _, session in ipairs(sessions) do
       if session.started_at == unix_epoch then
         zero_session = session
         break
@@ -204,12 +204,13 @@ local function set_playtime(app_name, minutes_forever)
 
     zero_session.ended_at = zero_session.ended_at + extra_minutes * 60
   else
-    table = {
+    local new_sessions = {
       {
         started_at = unix_epoch,
         ended_at = unix_epoch + minutes_forever * 60
       }
     }
+    sessions = new_sessions
   end
 
   SESSIONS[app_name] = sessions

@@ -38,10 +38,10 @@ export function PlaytimeInput({ app }: { app: Steam.AppOverview }) {
     } finally {
       setTimeout(() => {
         setSaveState('Save');
-        // Force location monitor to detect a "refresh" of the page to
-        // instantly update the playtime
-        forceFakeLocationChange();
       }, 2000);
+      // Force location monitor to detect a "refresh" of the page to
+      // instantly update the playtime
+      forceFakeLocationChange();
     }
   }, [app, playtimeMs]);
 
