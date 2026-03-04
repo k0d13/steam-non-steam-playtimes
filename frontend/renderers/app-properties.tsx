@@ -43,7 +43,8 @@ export async function register() {
 
     const appId = Number(this[0]!.link.split('/')[2]);
     if (Number.isNaN(appId) || appId < NON_STEAM_APP_APPID_MASK) return;
-    const app = Steam.AppStore.allApps.find((a) => a.appid === appId)!;
+    const app = Steam.AppStore.allApps.find((a) => a.appid === appId);
+    if (!app) return;
 
     this.push({
       title: 'Playtime',

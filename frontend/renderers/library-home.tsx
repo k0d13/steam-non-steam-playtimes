@@ -10,7 +10,7 @@ export function register() {
     'OnAppOverviewChange',
     async function (this: Steam.CollectionStore, [apps]: [Steam.AppOverview[]]) {
       const nonSteamApps = apps //
-        .filter((a) => a.appid > NON_STEAM_APP_APPID_MASK);
+        .filter((a) => a.appid >= NON_STEAM_APP_APPID_MASK);
       const appNames = nonSteamApps.map((a) => a.display_name);
       const playTimings = await rpc.GetPlaytimes(appNames);
 
