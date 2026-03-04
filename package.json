@@ -4,7 +4,8 @@
   "scripts": {
     "format": "oxfmt",
     "lint": "oxlint",
-    "dev": "powershell -ExecutionPolicy Bypass -File dev.ps1"
+    "dev": "powershell -ExecutionPolicy Bypass -File dev.ps1",
+    "build": "millennium-ttc --build prod"
   },
   "dependencies": {
     "@steambrew/client": "^5.8.4",
