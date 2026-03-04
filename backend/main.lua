@@ -12,16 +12,15 @@ SetPlaytime = RPC.SetPlaytime
 local function on_load()
   playtime.load_sessions()
   millennium.ready()
-  logger:info("on_load called")
+  logger:info("Backend loaded, waiting for frontend...")
 end
 
 local function on_frontend_loaded()
-  logger:info("on_frontend_loaded called")
+  logger:info("Frontend has loaded, now ready to track playtime...")
 end
 
 local function on_unload()
   playtime.save_sessions()
-  logger:info("on_unload called")
 end
 
 return {
