@@ -25,7 +25,7 @@ function Set-PluginName {
   $json.common_name = $CommonName
   $json | ConvertTo-Json -Depth 100 | Set-Content $Path
 
-  # bun biome format plugin.json --write
+  bun oxfmt plugin.json
 }
 
 function Build-Plugin {
