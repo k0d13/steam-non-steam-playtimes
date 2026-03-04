@@ -32,8 +32,17 @@ end
 local function save_sessions()
   local temp_path = SESSIONS_PATH .. ".tmp"
   local json_str = json.encode(SESSIONS)
-  local ok, error = utils.write_file(temp_path, json_str)
-  if ok and not error then fs.rename(temp_path, SESSIONS_PATH) end
+  local ok, err = utils.write_file(temp_path, json_str)
+  if not ok then
+    logger:error("Failed to write sessions temp file: " .. tostring(err))
+    return false
+  end
+  local renamed = fs.rename(temp_path, SESSIONS_PATH)
+  if not renamed then
+    logger:error("Failed to atomically replace sessions file")
+    return false
+  end
+  return true
 end
 
 local function load_sessions()
@@ -118,7 +127,7 @@ end
 local function ping_session(app_name, instance_id)
   -- Avoid spamming the console with this
   -- logger:info("Non-steam app " .. app_name .. " still running, pinging session...")
-  for _, session in ipairs(SESSIONS[app_name]) do
+  for _, session in ipairs(SESSIONS[app_name] or {}) do
     if session.instance_id == instance_id then
       session.ended_at = os.time()
       save_sessions()
@@ -132,7 +141,7 @@ end
 ---@return nil
 local function stop_session(app_name, instance_id)
   logger:info("Non-steam app " .. app_name .. " stopped, ending session...")
-  for _, session in ipairs(SESSIONS[app_name]) do
+  for _, session in ipairs(SESSIONS[app_name] or {}) do
     if session.instance_id == instance_id then
       session.ended_at = os.time()
       session.instance_id = nil
