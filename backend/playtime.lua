@@ -80,14 +80,14 @@ local function collapse_sessions()
       table.insert(sessions, 1, zero_session)
     end
 
-    for _, session in ipairs(stale_sessions) do
+    for i, session in ipairs(stale_sessions) do
       if session ~= latest_session and session ~= zero_session then
         local session_time = session.ended_at - session.started_at
         zero_session.ended_at = zero_session.ended_at + session_time
 
-        for i = #stale_sessions, 1, -1 do
-          if sessions[i] == session then
-            table.remove(sessions, i)
+        for j = #sessions, 1, -1 do
+          if sessions[j] == session then
+            table.remove(sessions, j)
             break
           end
         end
