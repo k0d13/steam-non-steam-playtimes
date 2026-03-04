@@ -48,7 +48,7 @@ function Toggle-Plugin {
 
   Write-Host "$(if ($Enable) { "Enabling" } else { "Disabling" }) plugin $Name..."
 
-  $json = Get-Content $Path | ConvertFrom-Json
+  $json = Get-Content -Path $Path -Raw | ConvertFrom-Json
   $plugins = @($json.plugins.enabledPlugins)
 
   if ($Enable) {
