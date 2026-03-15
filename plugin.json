@@ -3,6 +3,6 @@
   "name": "non-steam-playtimes",
   "common_name": "Non-Steam Playtimes",
   "description": "Track playtime for non-Steam games.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "backendType": "lua"
 }

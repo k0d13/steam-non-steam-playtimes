@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "biomejs.biome",
     "streetsidesoftware.code-spell-checker",
-    "gruntfuggly.todo-tree"
+    "gruntfuggly.todo-tree",
+    "oxc.oxc-vscode"
   ]
 }

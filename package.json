@@ -1,6 +1,6 @@
 {
   "name": "non-steam-playtimes",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "format": "oxfmt",
     "lint": "oxlint",
