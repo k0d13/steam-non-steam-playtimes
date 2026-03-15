@@ -32,11 +32,13 @@ end
 local function save_sessions()
   local temp_path = SESSIONS_PATH .. ".tmp"
   local json_str = json.encode(SESSIONS)
+
   local ok, err = utils.write_file(temp_path, json_str)
   if not ok then
     logger:error("Failed to write sessions temp file: " .. tostring(err))
     return false
   end
+
   local renamed = fs.rename(temp_path, SESSIONS_PATH)
   if not renamed then
     logger:error("Failed to atomically replace sessions file")
@@ -47,17 +49,28 @@ end
 
 local function load_sessions()
   local file = io.open(SESSIONS_PATH, "r")
-  if file then
-    local content = file:read("*all")
-    file:close()
-    if content then
-      SESSIONS = json.decode(content)
-      if migrate_sessions() then
-        local backup_path = SESSIONS_PATH .. ".bkp"
-        utils.write_file(backup_path, content)
-        save_sessions()
-      end
-    end
+  if not file then
+    return -- file doesn't exist, nothing to load
+  end
+
+  local content = file:read("*all")
+  file:close()
+
+  if not content or content == "" then
+    return
+  end
+
+  local ok, decoded = pcall(json.decode, content)
+  if not ok or not decoded then
+    return -- invalid JSON, ignore instead of erroring
+  end
+
+  SESSIONS = decoded
+
+  if migrate_sessions() then
+    local backup_path = SESSIONS_PATH .. ".bkp"
+    utils.write_file(backup_path, content)
+    save_sessions()
   end
 end
 
