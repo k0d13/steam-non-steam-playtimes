@@ -23,9 +23,8 @@ export async function patch(window: Window, app: Steam.AppOverview) {
     if (lastPlayedAt) {
       const component = <LastPlayed lastPlayedAt={lastPlayedAt} />;
       const element = renderComponent(component);
-      element.setAttribute('data-nsp', 'last-played');
 
-      const existing = parent.querySelector('[data-nsp=last-played]');
+      const existing = parent.querySelector(':has([data-nsp="last-played"])');
       if (existing) existing.replaceWith(element);
       else parent.appendChild(element);
     }
@@ -33,9 +32,8 @@ export async function patch(window: Window, app: Steam.AppOverview) {
     if (minutesForever > 0) {
       const component = <Playtime minutesForever={minutesForever} />;
       const element = renderComponent(component);
-      element.setAttribute('data-nsp', 'playtime');
 
-      const existing = parent.querySelector('[data-nsp=playtime]');
+      const existing = parent.querySelector(':has([data-nsp="playtime"])');
       if (existing) existing.replaceWith(element);
       else parent.appendChild(element);
     }

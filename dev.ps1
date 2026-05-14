@@ -65,7 +65,7 @@ function Toggle-Plugin {
 #####
 
 $SteamPath = "C:\Program Files (x86)\Steam"
-$ConfigPath = "$SteamPath\ext\config.json"
+$ConfigPath = "$SteamPath\millennium\config\config.json"
 $PluginName, $PluginCommonName = Get-PluginName -Path "./plugin.json"
 Stop-SteamProcess
 Set-PluginName -Path "plugin.json" -Name $PluginName-dev -CommonName "$PluginCommonName (dev)"

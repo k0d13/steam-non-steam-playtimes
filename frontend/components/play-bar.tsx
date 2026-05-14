@@ -11,7 +11,8 @@ export const PlayBarClasses = PlayBar;
 
 export function LastPlayed({ lastPlayedAt }: { lastPlayedAt: Date }) {
   return (
-    <div className={`${PlayBar.GameStat} ${PlayBar.LastPlayed} Panel`}>
+    <div data-nsp="last-played" className={`${PlayBar.GameStat} ${PlayBar.LastPlayed} Panel`}>
+      <style>{`.${PlayBar.GameStat}.${PlayBar.LastPlayed}:not([data-nsp]){display:none!important}`}</style>
       <div className={PlayBar.GameStatRight}>
         <div className={PlayBar.PlayBarLabel}>
           {/* TODO: Currently this assumes every non-steam app is a game, allow to differentiate */}
@@ -28,7 +29,8 @@ export function LastPlayed({ lastPlayedAt }: { lastPlayedAt: Date }) {
 
 export function Playtime({ minutesForever }: { minutesForever: number }) {
   return (
-    <div className={`${PlayBar.GameStat} ${PlayBar.Playtime} Panel`}>
+    <div data-nsp="playtime" className={`${PlayBar.GameStat} ${PlayBar.Playtime} Panel`}>
+      <style>{`.${PlayBar.GameStat}.${PlayBar.Playtime}:not([data-nsp]){display:none!important}`}</style>
       <div className={`${PlayBar.GameStatIcon} ${PlayBar.PlaytimeIcon}`}>
         <PlayTimeIcon />
       </div>
