@@ -19,7 +19,7 @@
     "strict": true,
 
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
 
@@ -42,6 +42,7 @@
     "skipLibCheck": true,
 
     "diagnostics": true,
-    "outDir": "./.millennium/Dist"
+    "rootDir": "frontend",
+    "outDir": ".millennium/Dist"
   }
 }
