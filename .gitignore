@@ -1,3 +1,4 @@
-.millennium/
+.ignore/
 node_modules/
+.millennium/
 sessions.json
