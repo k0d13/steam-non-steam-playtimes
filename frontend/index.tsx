@@ -1,11 +1,14 @@
 import { NON_STEAM_APP_APPID_MASK } from './constants.js';
-import { forceFakeLocationChange } from './helpers.js';
 import logger from './logger.js';
 import { onLocationChange } from './monitors/location.js';
 import { onPopupCreate, PopupType } from './monitors/popups.js';
 import { onAppLaunch } from './monitors/running-apps.js';
 import { register as registerAppProperties } from './renderers/app-properties.js';
-import { patch as patchLibraryApp } from './renderers/library-app.js';
+import {
+  patch as patchLibraryApp,
+  refresh as refreshLibraryApp,
+  unpatch as unpatchLibraryApp,
+} from './renderers/library-app.js';
 import { register as registerLibraryHome } from './renderers/library-home.js';
 import rpc from './rpc.js';
 import Steam from './steam.js';
@@ -37,7 +40,8 @@ export default async function OnPluginLoaded() {
         { app, instanceId },
       );
       rpc.OnNonSteamAppHeartbeat(app, instanceId);
-      forceFakeLocationChange();
+      // Refresh the playtime shown on the app's library page, if it's open
+      refreshLibraryApp(app.appid);
     });
 
     onQuit(() => {
@@ -68,10 +72,15 @@ export default async function OnPluginLoaded() {
           const app = Steam.AppStore.allApps //
             .find((app) => app.appid === appId)!;
           patchLibraryApp(popup.window!, app);
+        } else {
+          unpatchLibraryApp(popup.window!);
         }
       },
     );
 
-    return cleanup;
+    return () => {
+      cleanup();
+      unpatchLibraryApp(popup.window!);
+    };
   });
 }

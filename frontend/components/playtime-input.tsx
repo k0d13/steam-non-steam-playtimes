@@ -1,8 +1,8 @@
 import { Button, findClassModule, TextField } from '@steambrew/client';
 import { createMs, Time } from 'enhanced-ms';
 import { useCallback, useMemo, useState } from 'react';
-import { forceFakeLocationChange } from '../helpers';
 import logger from '../logger';
+import { refresh as refreshLibraryApp } from '../renderers/library-app';
 import rpc from '../rpc';
 import type Steam from '../steam';
 
@@ -39,9 +39,8 @@ export function PlaytimeInput({ app }: { app: Steam.AppOverview }) {
       setTimeout(() => {
         setSaveState('Save');
       }, 2000);
-      // Force location monitor to detect a "refresh" of the page to
-      // instantly update the playtime
-      forceFakeLocationChange();
+      // Re-render the playtime on the app's library page to instantly reflect the change
+      refreshLibraryApp(app.appid);
     }
   }, [app, playtimeMs]);
 

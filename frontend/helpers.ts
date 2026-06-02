@@ -1,6 +1,5 @@
 import { Millennium } from '@steambrew/client';
 import { createRoot } from 'react-dom/client';
-import Steam from './steam';
 
 /**
  * Render a React component to a DOM element
@@ -25,18 +24,6 @@ export async function waitFor<T>(condition: () => T, interval = 10): Promise<T> 
   if (result) return result;
   await new Promise((r) => setTimeout(r, interval * 1.1));
   return waitFor(condition, interval);
-}
-
-/**
- * Force a fake location change
- */
-export function forceFakeLocationChange(
-  window: Window = Steam.MainPopup?.window ?? globalThis.window,
-) {
-  if (Steam.UIStore.MainInstanceUIMode === Steam.UIMode.Desktop)
-    Steam.MainWindowBrowserManager.m_lastLocation.hash = `#${Math.random()}`;
-  else if (Steam.UIStore.MainInstanceUIMode === Steam.UIMode.Gamepad)
-    if (window.opener instanceof Window) window.opener.location.hash = `#${Math.random()}`;
 }
 
 /**

@@ -5,8 +5,23 @@ import logger from '../logger';
 import rpc from '../rpc';
 import type Steam from '../steam';
 
+const activeViews = new Map<Window, Steam.AppOverview>();
+export function unpatch(window: Window) {
+  activeViews.delete(window);
+}
+export async function refresh(appId: number) {
+  await Promise.allSettled(
+    [...activeViews]
+      .filter(([, app]) => app.appid === appId)
+      .map(([window, app]) => patch(window, app)),
+  );
+}
+
 export async function patch(window: Window, app: Steam.AppOverview) {
+  // This window now shows a different page; drop any previous tracking first
+  unpatch(window);
   if (app.appid < NON_STEAM_APP_APPID_MASK) return;
+  activeViews.set(window, app);
 
   logger.debug(
     `Patching library app for non-Steam app '${app.display_name}'`, //

@@ -40,7 +40,7 @@ function Copy-PluginFiles {
   New-Item -Path $Destination -ItemType Directory -Force | Out-Null
   Copy-Item -Path "plugin.json" -Destination $Destination -Force
   Copy-Item -Path ".millennium" -Destination $Destination -Recurse -Force
-  # Copy-Item -Path "backend" -Destination $Destination -Recurse -Force
+  Copy-Item -Path "backend" -Destination $Destination -Recurse -Force
 }
 
 function Toggle-Plugin {
