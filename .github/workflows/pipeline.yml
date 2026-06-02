@@ -1,0 +1,139 @@
+name: Pipeline
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'plugin.json'
+      - 'tsconfig.json'
+      - 'frontend/**'
+      - '.changeset/**'
+      - '.github/workflows/pipeline.yml'
+      - '.github/actions/**'
+      - '.github/scripts/**'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'plugin.json'
+      - 'tsconfig.json'
+      - 'frontend/**'
+      - '.changeset/**'
+      - '.github/workflows/pipeline.yml'
+      - '.github/actions/**'
+      - '.github/scripts/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Building
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/node
+
+      - name: Build plugin
+        run: pnpm build
+
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: .millennium/
+          retention-days: 1
+          include-hidden-files: true
+
+  lint:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/node
+
+      - name: Run the type checker
+        run: pnpm check
+
+      - name: Run the linter
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm format --check
+
+  process:
+    name: Processing Changesets
+    needs: [build, lint]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/node
+
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .millennium/
+
+      - name: Process changesets
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: bash .github/scripts/release-version.sh
+          publish: bash .github/scripts/release-publish.sh
+          title: 'Pending Releases'
+          commit: 'Update changelog and release'
+          # Our publish script creates the GitHub release (with the plugin zip
+          # attached); the action's own release-creation step would 409 on the
+          # tag we already published.
+          createGithubReleases: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PLUGIN_DB_TOKEN: ${{ secrets.PLUGIN_DB_TOKEN }}
+          # Optional: only needed if this repo has been renamed since being
+          # added to PluginDatabase as a submodule (URL-based lookup will miss).
+          PLUGIN_DB_SUBMODULE_PATH: plugins/non-steam-playtimes
+
+      - run: |
+          echo "published=${{ steps.changesets.outputs.published }}" >> $GITHUB_OUTPUT
+
+  snapshot:
+    name: Releasing Snapshot
+    needs: [process]
+    runs-on: ubuntu-latest
+    if: ${{ needs.process.outputs.published == 'false' }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: ./.github/actions/node
+
+      - name: Publish snapshot release
+        run: bash .github/scripts/release-snapshot.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

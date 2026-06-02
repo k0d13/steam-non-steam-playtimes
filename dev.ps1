@@ -40,7 +40,7 @@ function Copy-PluginFiles {
   New-Item -Path $Destination -ItemType Directory -Force | Out-Null
   Copy-Item -Path "plugin.json" -Destination $Destination -Force
   Copy-Item -Path ".millennium" -Destination $Destination -Recurse -Force
-  Copy-Item -Path "backend" -Destination $Destination -Recurse -Force
+  # Copy-Item -Path "backend" -Destination $Destination -Recurse -Force
 }
 
 function Toggle-Plugin {
@@ -70,7 +70,7 @@ $PluginName, $PluginCommonName = Get-PluginName -Path "./plugin.json"
 Stop-SteamProcess
 Set-PluginName -Path "plugin.json" -Name $PluginName-dev -CommonName "$PluginCommonName (dev)"
 Build-Plugin
-Copy-PluginFiles -Destination "$SteamPath\plugins\$PluginName-dev"
+Copy-PluginFiles -Destination "$SteamPath\millennium\plugins\$PluginName-dev"
 Set-PluginName -Path "plugin.json" -Name $PluginName -CommonName $PluginCommonName
 Toggle-Plugin -Path $ConfigPath -Name $PluginName -Enable $false
 Toggle-Plugin -Path $ConfigPath -Name $PluginName-dev -Enable $true
