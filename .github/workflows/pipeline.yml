@@ -53,8 +53,8 @@ jobs:
           retention-days: 1
           include-hidden-files: true
 
-  check:
-    name: Type Checking
+  lint:
+    name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -66,16 +66,6 @@ jobs:
       - name: Run the type checker
         run: pnpm check
 
-  lint:
-    name: Linting
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: ./.github/actions/node
-
       - name: Run the linter
         run: pnpm lint
 
@@ -84,7 +74,7 @@ jobs:
 
   process:
     name: Processing Changesets
-    needs: [build, check, lint]
+    needs: [build, lint]
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     outputs:
