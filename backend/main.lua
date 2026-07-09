@@ -1,3 +1,14 @@
+-- Millennium's luavm runs LuaJIT, which compiles hot loops into dynamically
+-- generated executable code pages. Anti-cheat / memory-scanning software that
+-- injects into every process (e.g. nProtect GameGuard, Windhawk) crashes when it
+-- walks those anonymous JIT regions, surfacing as an EXCEPTION_ACCESS_VIOLATION
+-- inside the injected module and getting misattributed to this plugin. Forcing
+-- the interpreter removes the trigger. See issue #46.
+if type(jit) == "table" and type(jit.off) == "function" then
+  pcall(jit.off)
+  pcall(jit.flush)
+end
+
 local logger = require("logger")
 local millennium = require("millennium")
 local playtime   = require("playtime")
