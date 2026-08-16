@@ -1,8 +1,7 @@
 import { beforePatch } from '@steambrew/client';
-import { NON_STEAM_APP_APPID_MASK } from '../constants';
-import logger from '../logger';
+import { Steam, NON_STEAM_APP_APPID_MASK } from 'steambrew-utils';
+import { logger } from '..';
 import rpc from '../rpc';
-import Steam from '../steam';
 
 export function register() {
   const patch = beforePatch(

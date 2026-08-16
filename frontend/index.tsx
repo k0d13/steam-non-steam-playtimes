@@ -1,8 +1,6 @@
-import { NON_STEAM_APP_APPID_MASK } from './constants.js';
-import logger from './logger.js';
-import { onLocationChange } from './monitors/location.js';
-import { onPopupCreate, PopupType } from './monitors/popups.js';
-import { onAppLaunch } from './monitors/running-apps.js';
+import { Steam, NON_STEAM_APP_APPID_MASK } from 'steambrew-utils';
+import { Logger } from 'steambrew-utils/logger';
+import { onLocationChange, onPopupCreate, PopupType, onAppLaunch } from 'steambrew-utils/watchers';
 import { register as registerAppProperties } from './renderers/app-properties.js';
 import {
   patch as patchLibraryApp,
@@ -11,9 +9,10 @@ import {
 } from './renderers/library-app.js';
 import { register as registerLibraryHome } from './renderers/library-home.js';
 import rpc from './rpc.js';
-import Steam from './steam.js';
 
 export { RPC } from './rpc.js';
+
+export const logger = new Logger('Non-Steam Playtimes');
 
 export default async function OnPluginLoaded() {
   registerAppProperties();

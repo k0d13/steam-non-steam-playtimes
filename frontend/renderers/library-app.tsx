@@ -1,9 +1,8 @@
+import { type Steam, NON_STEAM_APP_APPID_MASK } from 'steambrew-utils';
+import { querySelectorAll, renderComponent } from 'steambrew-utils/dom';
+import { logger } from '..';
 import { LastPlayed, PlayBarClasses, Playtime } from '../components/play-bar';
-import { NON_STEAM_APP_APPID_MASK } from '../constants';
-import { querySelectorAll, renderComponent } from '../helpers';
-import logger from '../logger';
 import rpc from '../rpc';
-import type Steam from '../steam';
 
 const activeViews = new Map<Window, Steam.AppOverview>();
 export function unpatch(window: Window) {
