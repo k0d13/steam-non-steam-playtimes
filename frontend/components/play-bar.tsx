@@ -1,5 +1,5 @@
 import { findClassModule, findModuleExport } from '@steambrew/client';
-import Steam from '../steam';
+import { Steam } from 'steambrew-utils';
 
 const formatRelativeDate = //
   findModuleExport((e) => e?.toString?.()?.includes('"#Time_Today"'));

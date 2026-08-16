@@ -1,10 +1,10 @@
 import { Button, findClassModule, TextField } from '@steambrew/client';
 import { createMs, Time } from 'enhanced-ms';
 import { useCallback, useMemo, useState } from 'react';
-import logger from '../logger';
+import { Steam } from 'steambrew-utils';
+import { logger } from '..';
 import { refresh as refreshLibraryApp } from '../renderers/library-app';
 import rpc from '../rpc';
-import type Steam from '../steam';
 
 const ms = createMs({
   formatOptions: {

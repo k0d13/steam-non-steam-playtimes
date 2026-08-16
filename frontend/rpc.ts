@@ -1,6 +1,14 @@
 import { Millennium } from '@steambrew/client';
-import type { Tuple } from './helpers.js';
-import type Steam from './steam.js';
+import type { Steam } from 'steambrew-utils';
+
+type Tuple<Holds, Length extends number> = Length extends Length
+  ? number extends Length
+    ? Holds[]
+    : _TupleOf<Holds, Length, []>
+  : never;
+type _TupleOf<Holds, Length extends number, Rest extends unknown[]> = Rest['length'] extends Length
+  ? Rest
+  : _TupleOf<Holds, Length, [Holds, ...Rest]>;
 
 async function call<R>(route: `RPC.${string}`, payload: object): Promise<R> {
   return Millennium.callServerMethod(route.slice(4), {

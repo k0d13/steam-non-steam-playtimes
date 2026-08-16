@@ -25,12 +25,12 @@ function Set-PluginName {
   $json.common_name = $CommonName
   $json | ConvertTo-Json -Depth 100 | Set-Content $Path
 
-  bun oxfmt plugin.json
+  pnpm oxfmt plugin.json
 }
 
 function Build-Plugin {
   Write-Host "Building plugin..."
-  bun millennium-ttc --build dev
+  pnpm millennium-ttc --build dev
 }
 
 function Copy-PluginFiles {
