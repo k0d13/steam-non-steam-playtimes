@@ -36,12 +36,14 @@ export async function register() {
     if (
       this.length === 0 ||
       this.length > 20 ||
+      !isAppPropertiesPage(this[0]) ||
+      typeof this[0].link !== 'string' ||
       !this.every(isAppPropertiesPage) ||
       this.some((p) => p.route === '/app/:appid/properties/playtime')
     )
       return;
 
-    const appId = Number(this[0]!.link.split('/')[2]);
+    const appId = Number(this[0].link.split('/')[2]);
     if (Number.isNaN(appId) || appId < NON_STEAM_APP_APPID_MASK) return;
     const app = Steam.AppStore.allApps.find((a) => a.appid === appId);
     if (!app) return;
